@@ -471,8 +471,9 @@ window.Boss = {
 			/* CLICK EVENTS */
 			Boss.evts.add('click', document, function(evts){
 				var elemt = Boss.targt(evts);
+
 				if(elemt.nodeName === 'A' || elemt.nodeName === 'a'){
-					if(elemt.href){
+					if(elemt.href && !elemt.getAttribute('data-no-popstate')){
 						if(evts.stopPropagation){
 							evts.stopPropagation();
 						}
@@ -483,6 +484,35 @@ window.Boss = {
 						Boss.pushstate.goXHR(elemt.href, xhrfn, lockChangePageFn);
 					}
 				}
+
+				if(elemt.parentNode){
+					if(elemt.parentNode.nodeName === 'A' || elemt.parentNode.nodeName === 'a'){
+						if(elemt.parentNode.href && !elemt.parentNode.getAttribute('data-no-popstate')){
+							if(evts.stopPropagation){
+								evts.stopPropagation();
+							}
+							if(evts.preventDefault){
+								evts.preventDefault();
+							}
+							Boss.pushstate.goXHR(elemt.parentNode.href, xhrfn, lockChangePageFn);
+						}
+					}
+				}
+
+				if(elemt.parentNode.parentNode){
+					if(elemt.parentNode.parentNode.nodeName === 'A' || elemt.parentNode.parentNode.nodeName === 'a'){
+						if(elemt.parentNode.parentNode.href && !elemt.parentNode.parentNode.getAttribute('data-no-popstate')){
+							if(evts.stopPropagation){
+								evts.stopPropagation();
+							}
+							if(evts.preventDefault){
+								evts.preventDefault();
+							}
+							Boss.pushstate.goXHR(elemt.parentNode.parentNode.href, xhrfn, lockChangePageFn);
+						}
+					}
+				}
+
 				if(elemt.nodeName === 'BUTTON' || elemt.nodeName === 'button'){
 					if(elemt.getAttribute('data-href')){
 						Boss.pushstate.goXHR(elemt.getAttribute('data-href'), xhrfn, lockChangePageFn);
@@ -2726,27 +2756,29 @@ Boss.validate = {
 			var classError = this.frmsMemory[form]['fields'][nme].classError;
 			var classOk = this.frmsMemory[form]['fields'][nme].classOk;
 
-			if(typeof(rFn) === 'function'){
-				if(rFn(fld, parameters) === false){
+			if(typeof(this.frmsMemory[form]['fields'][nme].rules[r].active) == 'undefined' || this.frmsMemory[form]['fields'][nme].rules[r].active === true){
+				if(typeof(rFn) === 'function'){
+					if(rFn(fld, parameters) === false){
 
-					if(evtstype !== 'keyup'){
-						Boss.warning({message: rMessage});
+						if(evtstype !== 'keyup'){
+							Boss.warning({message: rMessage});
+						}
+
+						fld[0].parentNode.classList.add(classError);
+						fld[0].parentNode.classList.remove(classOk);
+						
+						/* BREAK LOOPS */
+						return false;
+
+						/* BREAK LOOPS */
+						break;
+					}else{
+						fld[0].parentNode.classList.add(classOk);
+						fld[0].parentNode.classList.remove(classError);
 					}
-
-					fld[0].parentNode.classList.add(classError);
-					fld[0].parentNode.classList.remove(classOk);
-					
-					/* BREAK LOOPS */
-					return false;
-
-					/* BREAK LOOPS */
-					break;
 				}else{
-					fld[0].parentNode.classList.add(classOk);
-					fld[0].parentNode.classList.remove(classError);
+					console.warn('The rule "'+r+'" don\'t exists.');
 				}
-			}else{
-				console.warn('The rule "'+r+'" don\'t exists.');
 			}
 		}
 		return true;
@@ -2859,7 +2891,7 @@ Boss.validate = {
 					Boss.delayPersistent(function(){
 						var elem = Boss.targt(evts);
 						/* SOME ELEMENTS ALLOW BLUR */
-						if(elem.nodeName !== 'BUTTON' && elem.nodeName === 'INPUT'){
+						if(elem.nodeName !== 'BUTTON' && (elem.nodeName === 'INPUT' || elem.nodeName === 'TEXTAREA')){
 							if(elem.type !== 'radio' && elem.type !== 'checkbox' && elem.type !== 'select' && elem.type !== 'button' && elem.type !== 'submit' && elem.type !== 'reset' && elem.type !== 'image'){
 								Boss.validate.process(formid, evts);
 							}
@@ -2871,7 +2903,7 @@ Boss.validate = {
 				Boss.evts.add('blur', frm, function(evts){
 					var elem = Boss.targt(evts);
 					/* SOME ELEMENTS ALLOW BLUR */
-					if(elem.nodeName !== 'BUTTON' && elem.nodeName === 'INPUT'){
+					if(elem.nodeName !== 'BUTTON' && (elem.nodeName === 'INPUT' || elem.nodeName === 'TEXTAREA')){
 						if(elem.type !== 'radio' && elem.type !== 'checkbox' && elem.type !== 'select' && elem.type !== 'button' && elem.type !== 'submit' && elem.type !== 'reset' && elem.type !== 'image'){
 							Boss.validate.process(formid, evts);
 						}
@@ -2882,7 +2914,7 @@ Boss.validate = {
 				Boss.evts.add('focus', frm, function(evts){
 					var elem = Boss.targt(evts);
 					/* SOME ELEMENTS ALLOW BLUR */
-					if(elem.nodeName !== 'BUTTON' && elem.nodeName === 'INPUT'){
+					if(elem.nodeName !== 'BUTTON' && (elem.nodeName === 'INPUT' || elem.nodeName === 'TEXTAREA')){
 						if(elem.type !== 'radio' && elem.type !== 'checkbox' && elem.type !== 'select' && elem.type !== 'button' && elem.type !== 'submit' && elem.type !== 'reset' && elem.type !== 'image'){
 							Boss.validate.process(formid, evts);
 						}

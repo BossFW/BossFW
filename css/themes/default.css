@@ -174,15 +174,15 @@
 
 /* BUTTONS */
 .btn{
-	height: 30px;
+	height: 32px;
 	font-size: 0.9em;
 	cursor: pointer;
 	padding-left: 10px;
 	padding-right: 10px;
 	outline: none;
-	border-radius: 3px;
+	/*border-radius: 3px;*/
 	margin: 0px;
-	box-shadow: inset 0px -2px 1px rgba(0,0,0,0.05), 0px 1px 0px rgba(255,255,255,0.2);
+	/*box-shadow: inset 0px -2px 1px rgba(0,0,0,0.05), 0px 1px 0px rgba(255,255,255,0.2);*/
 	border: 1px solid #848484;
 	background-color: #FFF;
 	color: #848484;
@@ -234,6 +234,16 @@
 	border: 1px solid #3191EF !important;
 	color: #FFF !important;
 }
+.btn-grey{
+	background-color: #333 !important;
+	border: 1px solid #333 !important;
+	color: #FFF !important;
+}
+.btn-grey:hover{
+	background-color: #323232 !important;
+	border: 1px solid #323232 !important;
+	color: #FFF !important;
+}
 .btn-red{
 	background-color: #FFF !important;
 	border: 1px solid #FF4141 !important;
@@ -263,6 +273,18 @@
 .btn-orange-inverse:hover{
 	background-color: #FF7310 !important;
 	border: 1px solid #FF7310 !important;
+}
+
+.btn-left{
+	/*border-radius: 4px 0px 0px 4px !important;*/
+}
+.btn-center{
+	border-radius: 0px !important;
+	border-left: none !important;
+	border-right: none !important;
+}
+.btn-right{
+	/*border-radius: 0px 4px 4px 0px !important;*/
 }
 
 .box{
@@ -614,18 +636,15 @@
 	position: relative;
 	z-index: 1;
 	border: 1px solid #AAA;
+	background-color: #FFF;
 	height: 30px;
 	line-height: 30px;
 	min-width: 180px;
-	border-radius: 4px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	-o-box-sizing: border-box;
+	/*border-radius: 4px;*/
 }
 .boss-select select{
 	position: absolute;
+	cursor: pointer;
 	padding: 0px 5px;
 	margin: 0px;
 	left: 0px;
@@ -638,7 +657,7 @@
 	border: 2px solid rgba(0,0,0,0);
 	background-color: rgba(0,0,0,0);
 	width: 100%;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 }
 .boss-select::before{
 	content: '';
@@ -683,7 +702,7 @@
 
 /* UPLOAD */
 .boss-upload{
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	border: 1px solid #AAA;
 	height: 50px;
 	position: relative;
@@ -722,7 +741,7 @@
 	min-width: 180px;
 }
 .bar-progress div{
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	height: 30px;
 	width: 0px;
 	line-height: 30px;
@@ -740,12 +759,13 @@
 
 /* TEXT */
 .boss-input-text{
+	position: relative;
 	border: 1px solid #AAA;
 	display: inline-block;
 	padding-right: 30px;
-	height: 30px;
+	height: 32px;
 	background-color: #FFF;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -754,18 +774,31 @@
 }
 /* TEXTAREA */
 .boss-input-textarea{
-	color: #222;
-	font-size: 1em;
 	font-family: inherit;
-	font-weight: 400;
-	resize: none;
 	min-height: 80px;
 	border: 1px solid #AAA;
 	display: inline-block;
-	padding-right: 30px;
 	background-color: #FFF;
-	border-radius: 4px;
 	padding: 10px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+.boss-input-textarea textarea{
+	font-family: inherit;
+	color: #222;
+	font-size: 0.9em;
+	font-family: inherit;
+	font-weight: 400;
+	background-color: rgba(0,0,0,0);
+	height: inherit;
+	width: 100%;
+	min-height: inherit;
+	border: none;
+	outline: none;
+	resize: none;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -778,7 +811,7 @@
 	display: inline-block;
 	height: 30px;
 	background-color: #FFF;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -814,7 +847,7 @@
 	min-width: 235px;
 	background-color: #FFF;
 	border: 1px solid #AAA;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -993,7 +1026,7 @@
 	min-width: 170px;
 	background-color: #FFF;
 	border: 1px solid #AAA;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -1053,7 +1086,7 @@
 	min-width: 235px;
 	background-color: #FFF;
 	border: 1px solid #AAA;
-	border-radius: 4px;
+	/*border-radius: 4px;*/
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -1259,6 +1292,35 @@
 	border: 1px solid #74CF6A !important;
 }
 
+#push-loader{
+	position: fixed;
+	top: 0px;
+	background-color: #B91F1F;
+	height: 3px;
+	display: table;
+	width: 0%;
+	z-index: 9999;
+	-webkit-animation: all 0.50s ease-in-out;
+	-moz-animation: all 0.50s ease-in-out;
+	-o-animation: all 0.50s ease-in-out;
+	-ms-animation: all 0.50s ease-in-out;
+	animation: all 0.50s alternate;
+	-webkit-transition: all 0.50s ease-in-out;
+	-moz-transition: all 0.50s ease-in-out;
+	-o-transition: all 0.50s ease-in-out;
+	-ms-transition: all 0.50s ease-in-out;
+	transition: all 0.50s ease-in-out;
+}
+.push-loader{
+	max-width: 150px;
+	width: 100%;
+	background-color: #B91F1F;
+	height: 3px;
+	box-shadow: 0px 0px 10px 2px rgba(185, 31, 31, 0.62);
+	position: absolute;
+	right: 0px;
+}
+
 @media all and (min-width: 1281px){
 
 }
@@ -1332,11 +1394,10 @@
 	}
 	.boss-js-select-label-show{
 		position: fixed;
-		top: 40px;
-		left: 30px;
-		right: 30px;
+		top: 80px;
+		left: 40px;
+		right: 40px;
 		width: auto;
-		box-shadow: 0px 0px 10px 4px rgba(0,0,0,0.5);
 	}
 	.boss-js-select div.button{
 		height: 36px;
@@ -1453,11 +1514,10 @@
 	}
 	.boss-js-select-label-show{
 		position: fixed;
-		top: 40px;
-		left: 30px;
-		right: 30px;
+		top: 80px;
+		left: 40px;
+		right: 40px;
 		width: auto;
-		box-shadow: 0px 0px 10px 4px rgba(0,0,0,0.5);
 	}
 	.boss-js-select div.button{
 		height: 36px;

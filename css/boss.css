@@ -12,7 +12,7 @@
 ::-ms-clear { width : 0; height: 0;}
 ::-ms-reveal { width : 0; height: 0;}
 
-/* TAO AND TOUCH HIGHTLIGHT */
+/* TAP AND TOUCH HIGHTLIGHT */
 *{
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	-ms-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -28,9 +28,6 @@ a:active, a:hover, a:focus{
 p{
 	margin: 6px 0px;
 	text-align: left;
-	-ms-word-break: normal; 
-	word-break: normal; 
-	word-break: normal; /* old webkit */ 
 }
 img{
 	border: 0px;
@@ -41,9 +38,6 @@ table{
 table td{
 	vertical-align: top;
 	padding: 5px;
-	-ms-word-break: normal; 
-	word-break: normal; 
-	word-break: normal; /* old webkit */ 
 }
 select{
 	background-image: none;
