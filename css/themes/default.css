@@ -87,7 +87,7 @@
 }
 .boss-tree li label{
 	position: relative;
-	background-color: #FFF;
+
 	margin: 0px;
 	padding: 0px;
 	cursor: pointer;
@@ -132,7 +132,7 @@
 	margin: 5px 0px 0px 0px;
 }
 .boss-tree ul li label{
-	background-color: #FFF;
+
 }
 .boss-tree li input[type="checkbox"]{
 	position: absolute;

@@ -436,6 +436,8 @@ window.Boss = {
 				}
 			}
 		}
+
+		return XHR;
 	},
 	pushstate: {
 		init: function(configObj){
@@ -464,7 +466,10 @@ window.Boss = {
 					return false;
 				}
 
-				xhrfn(window.location.href);
+				var host = window.location.protocol+'//'+window.location.host;
+				var controler = window.location.href.replace(host, '');
+
+				xhrfn(controler, function(){});
 
 			});
 
@@ -540,17 +545,16 @@ window.Boss = {
 				}
 			});
 		},
-		goXHR: function(url, xhrfn, lockChangePageFn){
+		goXHR: function(controler, xhrfn, lockChangePageFn){
 
 			if(lockChangePage === true){
-				lockChangePageFn(url);
+				lockChangePageFn(controler);
 				return false;
 			}
 
-			history.pushState({}, '', url);
-			var host = window.location.protocol+'//'+window.location.host;
-			var controler = window.location.href.replace(host, '');
-			xhrfn(controler);
+			xhrfn(controler, function(){
+				history.pushState({}, '', controler);
+			});
 
 		}
 	},
@@ -2321,25 +2325,31 @@ Boss.validate = {
 			}
 
 			return true;
-        },
-        inteiro: function(value, parameter){
+		},
+		inteiro: function(fld, parameter){
 
-            if(value === ''){
-                return true;
-            }
+			var value = '';
+			var lengt = fld.length;
 
-            n = /^[0-9]+$/;
-            if(!n.test(value)){
-                return false;
-            }
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
 
-            n = /^[0]+/;
-            if(n.test(value)){
-                return false;
-            }
+			var n = /^[0-9]+$/;
+			if(!n.test(value)){
+				return false;
+			}
+
+			var n = /^[0]+/;
+			if(n.test(value)){
+				return false;
+			}
 
             return true;
-        },
+		},
 		moeda: function(fld, parameter){
 
 			var value = '';
@@ -2359,19 +2369,25 @@ Boss.validate = {
 
 			return true;
 		},
-        decimal: function(value, parameter){
+		decimal: function(fld, parameter){
 
-            if(value === ''){
-                return true;
-            }
+			var value = '';
+			var lengt = fld.length;
 
-            n = /^\d+(\.[\d]+)?$/;
-            if(!n.test(value)){
-                return false;
-            }
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
 
-            return true;
-        },
+			var n = /^\d+(\.[\d]+)?$/;
+			if(!n.test(value)){
+				return false;
+			}
+
+			return true;
+		},
 		cep: function(fld, parameter){
 
 			var value = '';
@@ -2484,8 +2500,19 @@ Boss.validate = {
 
 			return true;  
 		},
-		igual: function(value, parameters){
-			var igual = Boss.getName(parametro)[0];
+		igual: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var igual = Boss.getName(parameters.igual)[0];
 			if(value === igual.value){
 				return true;
 			}
@@ -2509,22 +2536,44 @@ Boss.validate = {
 			}
 			return false;
 		},
-        maiorId: function(value, parameters){
-            var igual = Boss.getById(parametro);
-            if(parseFloat(value) > parseFloat(igual.value)){
-                return true;
-            }
-            return false;
-        },
-        maiorIgualId: function(value, parameter){
-            var maiorigualid = Boss.getById(parametro);
-            if(parseFloat(value) >= parseFloat(maiorigualid.value)){
-                return true;
-            }
-            return false;
-        },
-        maiorIdNull: function(value, parameter){
-            var igual = Boss.getById(parametro);
+		maiorId: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var igual = Boss.getById(parameters.maiorId);
+			if(parseFloat(value) > parseFloat(igual.value)){
+				return true;
+			}
+			return false;
+		},
+        maiorIgualId: function(fld, parameter){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var maiorigualid = Boss.getById(parameter.maiorIgualId);
+			if(parseFloat(value) >= parseFloat(maiorigualid.value)){
+				return true;
+			}
+			return false;
+		},
+		maiorIdNull: function(value, parameter){
+		    var igual = Boss.getById(parametro);
             if(parseFloat(value) >= parseFloat(igual.value) || igual.value == ''){
                 return true;
             }
