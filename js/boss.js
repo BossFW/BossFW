@@ -89,6 +89,26 @@ window.Boss = {
 		}
 		return false;
 	},
+	isChild: function(parent, child) {
+		if(child.parentNode){
+			var node = child.parentNode;
+			while(node !== null){
+				if(node === parent){
+					return true;
+				}
+				node = node.parentNode;
+			}
+		}
+		return false;
+	},
+	insertAfter: function(newElement, targetElement){
+		var parent = targetElement.parentNode;
+		if(parent.lastchild == targetElement) {
+			parent.appendChild(newElement);
+		}else{
+			parent.insertBefore(newElement, targetElement.nextSibling);
+		}
+	},
 	getUri: function(){
 		var lca = window.location.href.split('?');
 		var getUri = {};
@@ -883,14 +903,14 @@ window.Boss = {
 					var tlis = lis.length;
 					var exp = new RegExp(search.value, 'i');
 
-					var finded = 0;
+					var found = 0;
 
 					for(x = 0; x < tlis; x++){
 						if(typeof(lis[x].childNodes) !== 'undefined'){
 							var tx = lis[x].getAttribute('data-value');
 							if(exp.test(tx)){
 								lis[x].classList.remove('hidden');
-								finded = finded + 1;
+								found = found + 1;
 							}else{
 								lis[x].classList.add('hidden');
 							}
@@ -1227,6 +1247,7 @@ window.Boss = {
 			var initShow = false;
 			var add = 'add';
 			var addXHR = false;
+			var searchXHR = false;
 			var clear = 'clear';
 			var ok = 'ok';
 			var placeholder = 'search';
@@ -1268,15 +1289,15 @@ window.Boss = {
 					}
 				});
 			}
-
 			if(confObj.initShow){
 				initShow = confObj.initShow;
 			}
-
 			if(confObj.addXHR){
 				addXHR = true;
 			}
-
+			if(confObj.searchXHR){
+				searchXHR = true;
+			}
 			if(confObj.clear){
 				clear = confObj.clear;
 			}
@@ -1362,30 +1383,93 @@ window.Boss = {
 					var tlis = lis.length;
 					var exp = new RegExp(search.value, 'i');
 
-					var finded = 0;
+					
+					if(searchXHR === true && search.value.length > 2){
+						Boss.ajax({
+							'url': confObj.searchXHR,
+							'data': {'label': search.value},
+							'dataType': 'json',
+							'done': function(rtn){
 
-					for(x = 0; x < tlis; x++){
-						if(typeof(lis[x].childNodes) !== 'undefined'){
-							var tx = lis[x].getAttribute('data-value');
-							if(exp.test(tx)){
-								lis[x].classList.remove('hidden');
-								finded = finded + 1;
-							}else{
-								lis[x].classList.add('hidden');
+								var lengt = Object.keys(rtn).length;
+
+								var saveLabel = '';
+								var saveValue = '';
+								// SAVE SELECTED
+								if(selct.value !== ''){
+									saveLabel = selct.options[selct.selectedIndex].textContent;
+									saveValue = selct.value;
+								}
+
+								// REMOVE OPTIONS AND LIs
+								ul.innerHTML = '<li data-value=" - - "><input tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span> - - </label></li>';
+								selct.innerHTML = '<option value=""> - - </option>';
+								
+								// INSERT SAVED SELECTED
+								if(saveLabel.value !== '' && saveValue !== ''){
+
+									var li = document.createElement('li');
+									li.setAttribute('data-value', saveLabel);
+									var id = 'id-'+elemtString+'-'+saveValue;
+
+									li.innerHTML = '<input checked tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="'+saveValue+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+saveLabel+'</label>';
+									ul.appendChild(li);
+
+									var opt = document.createElement('option');
+									opt.value = saveValue;
+									opt.setAttribute('selected', 'selected');
+									opt.innerHTML = saveLabel;
+
+									selct.appendChild(opt);
+								}
+
+								// SAVE found
+								for(x = 0; x < lengt; x++){
+
+									if(saveValue != rtn[x].value){
+
+										var li = document.createElement('li');
+										li.setAttribute('data-value', rtn[x].label);
+										var id = 'id-'+elemtString+'-'+rtn[x].value;
+
+										li.innerHTML = '<input tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="'+rtn[x].value+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+rtn[x].label+'</label>';
+										ul.appendChild(li);
+
+										var opt = document.createElement('option');
+										opt.value = rtn[x].value;
+										opt.innerHTML = rtn[x].label;
+
+										selct.appendChild(opt);
+
+									}
+								}
+							}
+						});
+					}else{
+						var found = 0;
+						for(x = 0; x < tlis; x++){
+							if(typeof(lis[x].childNodes) !== 'undefined'){
+								var tx = lis[x].getAttribute('data-value');
+								if(exp.test(tx)){
+									lis[x].classList.remove('hidden');
+									found = found + 1;
+								}else{
+									lis[x].classList.add('hidden');
+								}
 							}
 						}
-					}
 
-					if(search.value.length > 1){
-						if(addXHR !== false){
-							Boss.getById('add-'+elemtString).classList.remove('hidden');
+						if(search.value.length > 1){
+							if(addXHR !== false){
+								Boss.getById('add-'+elemtString).classList.remove('hidden');
+							}
+							Boss.getById('search-clear-'+elemtString).classList.remove('hidden');
+						}else{
+							if(addXHR !== false){
+								Boss.getById('add-'+elemtString).classList.add('hidden');
+							}
+							Boss.getById('search-clear-'+elemtString).classList.add('hidden');
 						}
-						Boss.getById('search-clear-'+elemtString).classList.remove('hidden');
-					}else{
-						if(addXHR !== false){
-							Boss.getById('add-'+elemtString).classList.add('hidden');
-						}
-						Boss.getById('search-clear-'+elemtString).classList.add('hidden');
 					}
 
 				}, 650);
@@ -1474,7 +1558,7 @@ window.Boss = {
 									li.setAttribute('data-value', a.label);
 									var id = 'id-'+elemtString+'-'+a.value;
 
-									li.innerHTML = '<input tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="'+a.value+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+a.label+'</label>';
+									li.innerHTML = '<input checked tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="'+a.value+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+a.label+'</label>';
 									ul.appendChild(li);
 
 									var opt = document.createElement('option');
@@ -1688,12 +1772,6 @@ window.Boss = {
 			if(confObj.initShow){
 				initShow = confObj.initShow;
 			}
-			if(confObj.today){
-				today = confObj.today;
-			}
-			if(confObj.clear){
-				clear = confObj.clear;
-			}
 			if(confObj.ok){
 				ok = confObj.ok;
 			}
@@ -1729,8 +1807,15 @@ window.Boss = {
 			mask += '<select id="year-'+elemtString+'" class="width-40" tabindex="-1"><option value="">-</option>'+optYear+'</select>';
 			mask += '</p>';
 			mask += '<p class="text-center">';
-			mask += '<button type="button" id="clear-'+elemtString+'" tabindex="-1" class="btn btn-red float-left">'+confObj.clear+'</button>';
-			mask += '<button type="button" id="today-'+elemtString+'" tabindex="-1" class="btn btn-green">'+confObj.today+'</button>';
+
+			if(confObj.clear){
+				mask += '<button type="button" id="clear-'+elemtString+'" tabindex="-1" class="btn btn-red float-left">'+confObj.clear+'</button>';
+			}
+
+			if(confObj.today){
+				mask += '<button type="button" id="today-'+elemtString+'" tabindex="-1" class="btn btn-green">'+confObj.today+'</button>';
+			}
+
 			mask += '<button type="button" id="ok-'+elemtString+'" tabindex="-1" class="btn btn-blue float-right">'+confObj.ok+'</button>';
 			mask += '</p>';
 			mask += '</div>';
@@ -2139,7 +2224,7 @@ window.Boss = {
 	},
 	tabs: {
 		abas:{},
-		render: function(elemento){
+		render: function(elemento, modo){
 			var elString = elemento;
 			var ul = elemento;
 			var lis, lisT, controlador;
@@ -2148,6 +2233,10 @@ window.Boss = {
 			}
 			lis = ul.getElementsByTagName('li');
 			lisT = lis.length;
+
+			if(typeof(modo) === 'undefined'){
+				modo = 'horizontal';
+			}
 
 			var hs = window.location.hash;
 			if(hs !== ''){
@@ -2174,20 +2263,20 @@ window.Boss = {
 				for(x = 0; x < nAbas; x++){
 					if(this.abas[elString][x] === uri.tabs){
 						Boss.getById(this.abas[elString][x]).classList.remove('hidden');
-						lis[x].classList.add('ui-tabs-ativa');
+						lis[x].classList.add('boss-tabs-'+modo+'-active');
 					}else{
 						Boss.getById(this.abas[elString][x]).classList.add('hidden');
-						lis[x].classList.remove('ui-tabs-ativa');
+						lis[x].classList.remove('boss-tabs-'+modo+'-active');
 					}
 				}
 			}else{
 				for(x = 0; x < nAbas; x++){
 					if(x == 0){
 						Boss.getById(this.abas[elString][x]).classList.remove('hidden');
-						lis[x].classList.add('ui-tabs-ativa');
+						lis[x].classList.add('boss-tabs-'+modo+'-active');
 					}else{
 						Boss.getById(this.abas[elString][x]).classList.add('hidden');
-						lis[x].classList.remove('ui-tabs-ativa');
+						lis[x].classList.remove('boss-tabs-'+modo+'-active');
 					}
 				}
 
@@ -2212,10 +2301,10 @@ window.Boss = {
 
 					if(Boss.tabs.abas[elString][x] ==  Boss.targt(evts).getAttribute('data-para')){
 						Boss.getById(Boss.tabs.abas[elString][x]).classList.remove('hidden');
-						lis[x].classList.add('ui-tabs-ativa');
+						lis[x].classList.add('boss-tabs-'+modo+'-active');
 					}else{
 						Boss.getById(Boss.tabs.abas[elString][x]).classList.add('hidden');
-						lis[x].classList.remove('ui-tabs-ativa');
+						lis[x].classList.remove('boss-tabs-'+modo+'-active');
 					}
 				}
 			});
@@ -2610,8 +2699,19 @@ Boss.validate = {
             }
             return false;
         },
-        diferente: function(value, parameter){
-            if(value !== parametro){
+        diferente: function(fld, parameter){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+            if(value !== parameter.diferente){
                 return true;
             }
             return false;

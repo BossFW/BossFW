@@ -1015,6 +1015,74 @@
 	-o-box-sizing: border-box;
 }
 
+/* TABS VERTICAL */
+.boss-tabs-vertical ul{
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+.boss-tabs-vertical li{
+	position: relative;
+	cursor: pointer;
+	list-style: none;
+	margin: 0px;
+	padding: 5px 15px;
+	background-color: #F8F8F8;
+	border-top: 1px solid #EEE;
+	border-left: 1px solid #EEE;
+	border-right: 1px solid #EEE;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+.boss-tabs-vertical li:last-child{
+	border-bottom: 1px solid #EEE;
+}
+.boss-tabs-vertical li:hover{
+	background-color: #EEE;
+}
+.boss-tabs-vertical-active{
+	background-color: #333!important;
+	color: #FFF !important;
+}
+.boss-tabs-vertical-active::before{
+	position: absolute;
+	top: 35%;
+	left: -4px;
+	display: block;
+	width: 0; 
+	height: 0;
+	content: "";
+	line-height: inherit;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-top: 8px solid #ED7E00;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+.boss-tabs-vertical-active::after{
+	position: absolute;
+	top: 35%;
+	right: -4px;
+	display: block;
+	width: 0; 
+	height: 0;
+	content: "";
+	line-height: inherit;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-top: 8px solid #ED7E00;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transfor
+
 /* JS DATA COMPONENT */
 .boss-js-date{
 	position: relative;
@@ -1449,6 +1517,25 @@
 		height: 36px;
 		line-height: 32px;
 	}
+
+	/* EDITOR */
+	.boss-input-editor-toolbar-text-left{
+		width: 40px;
+		height: 40px;
+		background-size: 400px 80px;
+	}
+	.boss-input-editor-toolbar-text-left:hover, .boss-input-editor-toolbar-text-left-active{
+		background-position: -160px 0px;
+	}
+	.boss-input-editor-toolbar-text-center{
+		width: 40px;
+		height: 40px;
+		background-size: 400px 80px;
+		background-position: -40px 0px;
+	}
+	.boss-input-editor-toolbar-text-center:hover, .boss-input-editor-toolbar-text-center-active{
+		background-position: -200px 0px;
+	}
 }
 @media all and (max-width: 321px){
 	.btn{
@@ -1571,5 +1658,24 @@
 	}
 	.boss-js-select-list{
 		max-height: 260px;
+	}
+
+	/* EDITOR */
+	.boss-input-editor-toolbar-text-left{
+		width: 40px;
+		height: 40px;
+		background-size: 400px 80px;
+	}
+	.boss-input-editor-toolbar-text-left:hover, .boss-input-editor-toolbar-text-left-active{
+		background-position: -160px 0px;
+	}
+	.boss-input-editor-toolbar-text-center{
+		width: 40px;
+		height: 40px;
+		background-size: 400px 80px;
+		background-position: -40px 0px;
+	}
+	.boss-input-editor-toolbar-text-center:hover, .boss-input-editor-toolbar-text-center-active{
+		background-position: -200px 0px;
 	}
 }
