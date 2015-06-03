@@ -2283,7 +2283,7 @@ window.Boss = {
 			}
 
 			/* CLICK EVENT */
-			Boss.evts.add(Boss.evtTouch(), ul, function(evts){
+			Boss.evts.add(Boss.evtTouchUp(), ul, function(evts){
 
 				var elString = Boss.targt(evts).parentNode.getAttribute('id');
 
@@ -2932,6 +2932,92 @@ Boss.validate = {
 		}
 		return true;
 	},
+	goMask: function(form, nme, mask, evts){
+
+		if(mask === 'tel'){
+			mask = '(99) 9999-9999';
+		}
+		if(mask === 'cnpj'){
+			mask = '99.999.999/9999-99';
+		}
+		if(mask === 'cpf'){
+			mask = '999.999.999-99';
+		}
+		if(mask === 'cep'){
+			mask = '99999-999';
+		}
+
+		if(evts.keyCode !== 37 && evts.keyCode !== 37 && evts.keyCode !== 37 && evts.keyCode !== 40){
+
+			var fld = document.getElementsByName(this.frmsMemory[form].names[nme])[0];
+			var val = fld.value;
+
+			var spltMask = mask.split('');
+			var lengtMask = spltMask.length;
+
+			var spltVal = val.split('');
+
+			var partial = '';
+
+			var cut = Array();
+			var outs = {};
+			var pcut = 0;
+
+			for(x = 0; x < lengtMask; x++){
+
+				var d = /\d/;
+				var a = /\w/;
+
+				if(d.test(spltMask[x]) && a.test(spltMask[x])){
+					if(!cut[pcut]){
+						cut[pcut] = 0;
+					}
+					cut[pcut] = cut[pcut] + 1;
+				}else{
+					pcut++;
+					cut[pcut] = spltMask[x];
+					outs[spltMask[x]] = spltMask[x];
+					pcut++;
+				}
+			}
+
+			var v = val;
+			for(o in outs){
+				var reg = new RegExp('\\'+outs[o], 'g');
+				v = v.replace(reg, '');
+			}
+
+			/* 10 and 11 digitos for fone */
+			if(v.length === 11 && mask === '(99) 9999-9999'){
+				cut = Array("(", 2, ")"," ", 5, "-", 4);
+			}else if(v.length === 10 && mask === '(99) 9999-9999'){
+				cut = Array("(", 2, ")"," ", 4, "-", 4);
+			}
+
+			var start = 0;
+
+			var masked = '';
+
+			for(c in cut){
+				if(cut[c] > 0){
+					masked += v.substr(start, cut[c]);
+					start = start + cut[c];
+				}else{
+					if(v.length >= start){
+						masked += cut[c];
+					}
+				}
+			}
+
+			if(masked === '('){
+				masked = '';
+			}
+
+			fld.value = masked;
+
+		}
+
+	},
 	process: function(form, evts){
 
 		var frm = Boss.getById(form);
@@ -2947,6 +3033,23 @@ Boss.validate = {
 			/* IF NAME EXISTS */
 			if(typeof(this.frmsMemory[form]['fields'][nme]) !== 'undefined'){
 				this.processField(form, nme, this.frmsMemory[form]['fields'][nme].rules, evts.type);
+			}
+
+			if(evts.type === 'blur' || evts.type === 'change' || evts.type === 'keyup' && evts.keyCode !== 8){
+				if(typeof(this.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
+					this.goMask(form, nme, this.frmsMemory[form]['fields'][nme].mask, evts);
+				}
+			}
+
+			if(evts.type === 'keyup' && evts.keyCode === 8){
+				if(typeof(this.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
+					Boss.delayPersistent(function(){
+						var fld = Boss.targt(evts);
+						var nme = fld.getAttribute('name');
+						Boss.validate.goMask(form, nme, Boss.validate.frmsMemory[form]['fields'][nme].mask, evts);
+						Boss.trigger('keyup', fld);
+					}, 1300);
+				}
 			}
 
 		/* SUBMIT */
