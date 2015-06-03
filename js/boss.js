@@ -1395,17 +1395,17 @@ window.Boss = {
 
 								var saveLabel = '';
 								var saveValue = '';
-								// SAVE SELECTED
+								/* SAVE SELECTED */
 								if(selct.value !== ''){
 									saveLabel = selct.options[selct.selectedIndex].textContent;
 									saveValue = selct.value;
 								}
 
-								// REMOVE OPTIONS AND LIs
+								/* REMOVE OPTIONS AND LIs */
 								ul.innerHTML = '<li data-value=" - - "><input tabindex="-1" type="radio" name="'+elemtString+'" class="boss-comp-radio" value="" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span> - - </label></li>';
 								selct.innerHTML = '<option value=""> - - </option>';
 								
-								// INSERT SAVED SELECTED
+								/* INSERT SAVED SELECTED */
 								if(saveLabel.value !== '' && saveValue !== ''){
 
 									var li = document.createElement('li');
@@ -1423,7 +1423,7 @@ window.Boss = {
 									selct.appendChild(opt);
 								}
 
-								// SAVE found
+								/* SAVE found */
 								for(x = 0; x < lengt; x++){
 
 									if(saveValue != rtn[x].value){
