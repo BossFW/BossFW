@@ -3031,24 +3031,28 @@ Boss.validate = {
 			var nme = fld.getAttribute('name');
 
 			/* IF NAME EXISTS */
-			if(typeof(this.frmsMemory[form]['fields'][nme]) !== 'undefined'){
+			if(typeof(Boss.validate.frmsMemory[form]['fields'][nme]) !== 'undefined'){
 				this.processField(form, nme, this.frmsMemory[form]['fields'][nme].rules, evts.type);
 			}
 
 			if(evts.type === 'blur' || evts.type === 'change' || evts.type === 'keyup' && evts.keyCode !== 8){
-				if(typeof(this.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
-					this.goMask(form, nme, this.frmsMemory[form]['fields'][nme].mask, evts);
+				if(typeof(Boss.validate.frmsMemory[form]['fields'][nme]) !== 'undefined'){
+					if(typeof(Boss.validate.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
+						this.goMask(form, nme, this.frmsMemory[form]['fields'][nme].mask, evts);
+					}
 				}
 			}
 
 			if(evts.type === 'keyup' && evts.keyCode === 8){
-				if(typeof(this.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
-					Boss.delayPersistent(function(){
-						var fld = Boss.targt(evts);
-						var nme = fld.getAttribute('name');
-						Boss.validate.goMask(form, nme, Boss.validate.frmsMemory[form]['fields'][nme].mask, evts);
-						Boss.trigger('keyup', fld);
-					}, 1300);
+				if(typeof(Boss.validate.frmsMemory[form]['fields'][nme]) !== 'undefined'){
+					if(typeof(Boss.validate.frmsMemory[form]['fields'][nme].mask) !== 'undefined'){
+						Boss.delayPersistent(function(){
+							var fld = Boss.targt(evts);
+							var nme = fld.getAttribute('name');
+							Boss.validate.goMask(form, nme, Boss.validate.frmsMemory[form]['fields'][nme].mask, evts);
+							Boss.trigger('keyup', fld);
+						}, 1300);
+					}
 				}
 			}
 
