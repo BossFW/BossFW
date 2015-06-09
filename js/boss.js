@@ -497,7 +497,7 @@ window.Boss = {
 			Boss.evts.add('click', document, function(evts){
 				var elemt = Boss.targt(evts);
 
-				if(elemt.nodeName === 'A' || elemt.nodeName === 'a'){
+				if((elemt.nodeName === 'A' || elemt.nodeName === 'a') && !elemt.getAttribute('data-href')){
 					if(elemt.href && !elemt.getAttribute('data-no-popstate')){
 						if(evts.stopPropagation){
 							evts.stopPropagation();
@@ -511,7 +511,7 @@ window.Boss = {
 				}
 
 				if(elemt.parentNode){
-					if(elemt.parentNode.nodeName === 'A' || elemt.parentNode.nodeName === 'a'){
+					if((elemt.parentNode.nodeName === 'A' || elemt.parentNode.nodeName === 'a') && !elemt.parentNode.getAttribute('data-href')){
 						if(elemt.parentNode.href && !elemt.parentNode.getAttribute('data-no-popstate')){
 							if(evts.stopPropagation){
 								evts.stopPropagation();
@@ -525,7 +525,7 @@ window.Boss = {
 				}
 
 				if(elemt.parentNode.parentNode){
-					if(elemt.parentNode.parentNode.nodeName === 'A' || elemt.parentNode.parentNode.nodeName === 'a'){
+					if((elemt.parentNode.parentNode.nodeName === 'A' || elemt.parentNode.parentNode.nodeName === 'a') && !elemt.parentNode.parentNode.getAttribute('data-href')){
 						if(elemt.parentNode.parentNode.href && !elemt.parentNode.parentNode.getAttribute('data-no-popstate')){
 							if(evts.stopPropagation){
 								evts.stopPropagation();
@@ -540,7 +540,9 @@ window.Boss = {
 
 				if(elemt.nodeName === 'BUTTON' || elemt.nodeName === 'button'){
 					if(elemt.getAttribute('data-href')){
-						Boss.pushstate.goXHR(elemt.getAttribute('data-href'), xhrfn, lockChangePageFn);
+						if(elemt.getAttribute('data-href') !== 'false'){
+							Boss.pushstate.goXHR(elemt.getAttribute('data-href'), xhrfn, lockChangePageFn);
+						}
 					}
 				}
 			});
