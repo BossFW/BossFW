@@ -836,6 +836,177 @@
 	-o-box-sizing: border-box;
 }
 
+/* HTML EDITOR */
+.boss-input-editor{
+	border-top: 3px solid #999;
+	border-left: 1px solid #AAA;
+	border-right: 1px solid #AAA;
+	border-bottom: 1px solid #AAA;
+	display: inline-block;
+	background-color: #FFF;
+}
+.boss-input-editor-toolbar{
+	border-bottom: 1px solid #AAA;
+	padding: 5px 2px 2px 2px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+.boss-input-editor-toolbar-text-left{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: 0px 0px;
+}
+.boss-input-editor-toolbar-text-left:hover, .boss-input-editor-toolbar-text-left-active{
+	background-position: -120px 0px;
+}
+.boss-input-editor-toolbar-text-center{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -30px 0px;
+}
+.boss-input-editor-toolbar-text-center:hover, .boss-input-editor-toolbar-text-center-active{
+	background-position: -150px 0px;
+}
+.boss-input-editor-toolbar-text-right{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -60px 0px;
+}
+.boss-input-editor-toolbar-text-right:hover, .boss-input-editor-toolbar-text-right-active{
+	background-position: -180px 0px;
+}
+.boss-input-editor-toolbar-text-justify{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -90px 0px;
+}
+.boss-input-editor-toolbar-text-justify:hover, .boss-input-editor-toolbar-text-justify-active{
+	background-position: -210px 0px;
+}
+/* EDITOR COLORS */
+.boss-input-editor-toolbar-color{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -240px 0px;
+}
+.boss-input-editor-toolbar-color:hover, .boss-input-editor-toolbar-color-active{
+	background-position: -270px 0px;
+}
+.boss-input-editor-toolbar-color-red{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: 0px -30px;
+}
+.boss-input-editor-toolbar-color-red:hover, .boss-input-editor-toolbar-color-red-active{
+	background-position: -30px -30px;
+}
+.boss-input-editor-toolbar-color-green{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -60px -30px;
+}
+.boss-input-editor-toolbar-color-green:hover, .boss-input-editor-toolbar-color-green-active{
+	background-position: -90px -30px;
+}
+.boss-input-editor-toolbar-color-blue{
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	width: 30px;
+	height: 30px;
+	background-image: url(/jnh/sprites/sprite_editor.png);
+	background-color: #FFF;
+	border: none;
+	background-repeat: no-repeat;
+	background-size: 300px 60px;
+	background-position: -120px -30px;
+}
+.boss-input-editor-toolbar-color-blue:hover, .boss-input-editor-toolbar-color-blue-active{
+	background-position: -150px -30px;
+}
+
+.boss-input-editor-editable{
+	background-color: #FFF;
+	outline: none;
+	min-height: 80px;
+	padding: 10px;
+	outline: none;
+	overflow: auto;
+	max-height: 350px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+.boss-input-editor-editable *{
+	outline: none;
+}
+.boss-input-editor-editable p{
+	font-size: 0.9em;
+}
+
 /* JS SELECT COMPONENT */
 .boss-js-select{
 	position: relative;

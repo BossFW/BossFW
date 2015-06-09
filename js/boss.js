@@ -3193,3 +3193,334 @@ Boss.validate = {
 		}
 	}
 }
+
+Boss.htmlEditor = {
+	setTextareaValue: function(elem, values){
+		var texta = Boss.getById(elem);
+		if(values === '<p contenteditable="true"></p>' || values === '<p></p>'){
+			texta.value = '';
+		}else{
+			/* REMOVE TRASH ATRIBUTES */
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = values;
+
+			var ps = tempDiv.getElementsByTagName('p');
+			var lps = ps.length;
+			for(x = 0; x < lps; x++){
+				ps[x].removeAttribute('style');
+				ps[x].removeAttribute('contenteditable');
+				ps[x].removeAttribute('tabindex');
+				if(ps[x].getAttribute('class') === ''){
+					ps[x].removeAttribute('class');
+				}
+			}
+
+			var h1 = tempDiv.getElementsByTagName('h1');
+			var lh1 = h1.length;
+			for(x = 0; x < lh1; x++){
+				h1[x].removeAttribute('style');
+				h1[x].removeAttribute('contenteditable');
+				h1[x].removeAttribute('tabindex');
+				if(h1[x].getAttribute('class') === ''){
+					h1[x].removeAttribute('class');
+				}
+			}
+
+			var h2 = tempDiv.getElementsByTagName('h2');
+			var lh2 = h2.length;
+			for(x = 0; x < lh2; x++){
+				h2[x].removeAttribute('style');
+				h2[x].removeAttribute('contenteditable');
+				h2[x].removeAttribute('tabindex');
+				if(h2[x].getAttribute('class') === ''){
+					h2[x].removeAttribute('class');
+				}
+			}
+
+			var h3 = tempDiv.getElementsByTagName('h3');
+			var lh3 = h3.length;
+			for(x = 0; x < lh3; x++){
+				h3[x].removeAttribute('style');
+				h3[x].removeAttribute('contenteditable');
+				h3[x].removeAttribute('tabindex');
+				if(h3[x].getAttribute('class') === ''){
+					h3s[x].removeAttribute('class');
+				}
+			}
+			texta.value = tempDiv.innerHTML;
+		}
+	},
+	init: function(id){
+
+		var elem = Boss.getById(id);
+		elem.classList.add('hidden');
+
+		var toolbar = document.createElement('div');
+		toolbar.setAttribute('id', 'toolbar-'+id);
+		toolbar.classList.add('boss-input-editor-toolbar');
+		var mask = '<button data-tool="H1" type="button" class="btn">h1</button><button data-tool="H2" type="button" class="btn">h2</button><button data-tool="H3" type="button" class="btn">h3</button><button data-tool="P" type="button" class="btn">parágrafo</button>';
+
+		mask += ' <button data-strong="strong" type="button" class="btn">strong</button>';
+
+		mask += ' <button type="button" id="to-lef-'+id+'" data-class="text-left" class="boss-input-editor-toolbar-text-left"></button>';
+		mask += ' <button type="button" id="to-cen-'+id+'" data-class="text-center" class="boss-input-editor-toolbar-text-center"></button>';
+		mask += ' <button type="button" id="to-rig-'+id+'" data-class="text-right" class="boss-input-editor-toolbar-text-right"></button>';
+		mask += ' <button type="button" id="to-jus-'+id+'" data-class="text-justify" class="boss-input-editor-toolbar-text-justify"></button>';
+
+		mask += ' <button type="button" id="to-nor-'+id+'" data-color="" class="boss-input-editor-toolbar-color"></button>';
+		mask += ' <button type="button" id="to-red-'+id+'" data-color="red" class="boss-input-editor-toolbar-color-red"></button>';
+		mask += ' <button type="button" id="to-gre-'+id+'" data-color="green" class="boss-input-editor-toolbar-color-green"></button>';
+		mask += ' <button type="button" id="to-blu-'+id+'" data-color="blue" class="boss-input-editor-toolbar-color-blue"></button>';
+
+		toolbar.innerHTML = mask;
+		elem.parentNode.appendChild(toolbar);
+
+		var editor = document.createElement('div');
+		editor.classList.add('boss-input-editor-editable');
+		editor.setAttribute('contenteditable', 'true');
+		editor.setAttribute('id', 'editor-'+id);
+
+		if(elem.value !== ''){
+			editor.innerHTML = elem.value;
+		}
+		if(elem.value === ''){
+			editor.innerHTML = '<p></p>';
+		}
+
+		elem.parentNode.appendChild(editor);
+
+		Boss.evts.add(Boss.evtTouchUp(), Boss.getById('toolbar-'+id), function(evts){
+
+			var tgt = Boss.targt(evts);
+			var editor = Boss.getById('editor-'+id)
+
+			if(document.selection){
+				var select = document.selection.createRange().parentElement();
+			}else{
+				var select = window.getSelection().anchorNode.parentNode; 
+			}
+
+			if(Boss.isChild(editor, select) === true){
+				if(tgt.getAttribute('data-tool')){
+					if(tgt.getAttribute('data-tool') === 'H1' || tgt.getAttribute('data-tool') === 'H2' || tgt.getAttribute('data-tool') === 'H3' || tgt.getAttribute('data-tool') === 'P'){
+						if(tgt.nodeName !== tgt.getAttribute('data-tool')){
+							var newel = document.createElement(tgt.getAttribute('data-tool'));
+							newel.innerHTML = select.innerHTML;
+							editor.replaceChild(newel, select);
+
+							if(document.selection){
+								var targt = document.selection.createRange().parentElement();
+								var sel = document.selection;
+							}else{
+								var targt = window.getSelection().anchorNode.parentNode; 
+								var sel = window.getSelection();
+							}
+
+							var range = document.createRange();
+
+							range.setStart(newel, 1);
+							range.collapse(true);
+							sel.removeAllRanges();
+							sel.addRange(range);
+						}
+					}
+				}
+
+				if(typeof(tgt.getAttribute('data-class')) !== null){
+
+					var toLeft 		= Boss.getById('to-lef-'+id);
+					var toCenter 	= Boss.getById('to-cen-'+id);
+					var toRight 	= Boss.getById('to-rig-'+id);
+					var toJustify 	= Boss.getById('to-jus-'+id);
+
+					if(tgt.getAttribute('data-class') === 'text-left'){
+						select.classList.remove('text-left');
+						select.classList.remove('text-center');
+						select.classList.remove('text-right');
+						select.classList.remove('text-justify');
+
+						toLeft.classList.add('boss-input-editor-toolbar-text-left-active');
+						toCenter.classList.remove('boss-input-editor-toolbar-text-center-active');
+						toRight.classList.remove('boss-input-editor-toolbar-text-right-active');
+						toJustify.classList.remove('boss-input-editor-toolbar-text-justify-active');
+					}
+					if(tgt.getAttribute('data-class') === 'text-center'){
+						select.classList.add('text-center');
+						select.classList.remove('text-left');
+						select.classList.remove('text-right');
+						select.classList.remove('text-justify');
+
+						toLeft.classList.remove('boss-input-editor-toolbar-text-left-active');
+						toCenter.classList.add('boss-input-editor-toolbar-text-center-active');
+						toRight.classList.remove('boss-input-editor-toolbar-text-right-active');
+						toJustify.classList.remove('boss-input-editor-toolbar-text-justify-active');
+					}
+					if(tgt.getAttribute('data-class') === 'text-right'){
+						select.classList.add('text-right');
+						select.classList.remove('text-left');
+						select.classList.remove('text-center');
+						select.classList.remove('text-justify');
+
+						toLeft.classList.remove('boss-input-editor-toolbar-text-left-active');
+						toCenter.classList.remove('boss-input-editor-toolbar-text-center-active');
+						toRight.classList.add('boss-input-editor-toolbar-text-right-active');
+						toJustify.classList.remove('boss-input-editor-toolbar-text-justify-active');
+					}
+					if(tgt.getAttribute('data-class') === 'text-justify'){
+						select.classList.add('text-justify');
+						select.classList.remove('text-left');
+						select.classList.remove('text-center');
+						select.classList.remove('text-right');
+
+						toLeft.classList.remove('boss-input-editor-toolbar-text-left-active');
+						toCenter.classList.remove('boss-input-editor-toolbar-text-center-active');
+						toRight.classList.remove('boss-input-editor-toolbar-text-right-active');
+						toJustify.classList.add('boss-input-editor-toolbar-text-justify-active');
+					}
+				}
+
+				if(typeof(tgt.getAttribute('data-color')) !== null){
+
+					var toNormal 	= Boss.getById('to-nor-'+id);
+					var toRed 		= Boss.getById('to-red-'+id);
+					var toGreen 	= Boss.getById('to-gre-'+id);
+					var toBlue 		= Boss.getById('to-blu-'+id);
+
+					if(tgt.getAttribute('data-color') === 'red'){
+						select.classList.add('red');
+						select.classList.remove('green');
+						select.classList.remove('blue');
+						toNormal.classList.remove('boss-input-editor-toolbar-color-active');
+						toRed.classList.add('boss-input-editor-toolbar-color-red-active');
+						toGreen.classList.remove('boss-input-editor-toolbar-color-green-active');
+						toBlue.classList.remove('boss-input-editor-toolbar-color-blue-active');
+					}else if(tgt.getAttribute('data-color') === 'green'){
+						select.classList.add('green');
+						select.classList.remove('red');
+						select.classList.remove('blue');
+						toNormal.classList.remove('boss-input-editor-toolbar-color-active');
+						toRed.classList.remove('boss-input-editor-toolbar-color-red-active');
+						toGreen.classList.add('boss-input-editor-toolbar-color-green-active');
+						toBlue.classList.remove('boss-input-editor-toolbar-color-blue-active');
+					}else if(tgt.getAttribute('data-color') === 'blue'){
+						select.classList.add('blue');
+						select.classList.remove('red');
+						select.classList.remove('green');
+						toNormal.classList.remove('boss-input-editor-toolbar-color-active');
+						toRed.classList.remove('boss-input-editor-toolbar-color-red-active');
+						toGreen.classList.remove('boss-input-editor-toolbar-color-green-active');
+						toBlue.classList.add('boss-input-editor-toolbar-color-blue-active');
+					}else{
+						select.classList.remove('red');
+						select.classList.remove('green');
+						select.classList.remove('blue');
+						toNormal.classList.add('boss-input-editor-toolbar-color-active');
+						toRed.classList.remove('boss-input-editor-toolbar-color-red-active');
+						toGreen.classList.remove('boss-input-editor-toolbar-color-green-active');
+						toBlue.classList.remove('boss-input-editor-toolbar-color-blue-active');
+					}
+				}
+
+				if(typeof(tgt.getAttribute('data-strong')) !== null){
+					if(tgt.getAttribute('data-strong') === 'strong'){
+						select.classList.toggle('strong');
+					}
+				}
+				Boss.htmlEditor.setTextareaValue(id, editor.innerHTML);
+			}
+		});
+
+		Boss.evts.add('keypress', Boss.getById('editor-'+id), function(evts){
+
+			var editor = Boss.getById('editor-'+id);
+
+			/* ENTER */
+			if(evts.keyCode === 13){
+
+				if(evts.stopPropagation){
+					evts.stopPropagation();
+				}
+				if(evts.preventDefault){
+					evts.preventDefault();
+				}
+
+				if(document.selection){
+					var targt = document.selection.createRange().parentElement();
+					var sel = document.selection;
+				}else{
+					var targt = window.getSelection().anchorNode.parentNode; 
+					var sel = window.getSelection();
+				}
+
+				if(targt.parentNode === editor){
+				
+					var newP = document.createElement('p');
+					Boss.insertAfter(newP, targt);
+
+					var range = document.createRange();
+
+					range.setStart(newP, 0);
+					range.collapse(true);
+					sel.removeAllRanges();
+					sel.addRange(range);
+				}
+			}
+			if(evts.keyCode === 8){
+				if(evts.stopPropagation){
+					evts.stopPropagation();
+				}
+				if(evts.preventDefault){
+					evts.preventDefault();
+				}
+			}
+		});
+
+		Boss.evts.add('keyup', Boss.getById('editor-'+id), function(evts){
+
+			var editor = Boss.getById('editor-'+id);
+
+			if(evts.keyCode === 8){
+
+				if(editor.innerHTML === ''){
+
+					if(document.selection){
+						var targt = document.selection.createRange().parentElement();
+						var sel = document.selection;
+					}else{
+						var targt = window.getSelection().anchorNode.parentNode; 
+						var sel = window.getSelection();
+					}
+					
+					var newP = document.createElement('p');
+					editor.appendChild(newP);
+
+					var range = document.createRange();
+
+					range.setStart(newP, 0);
+					range.collapse(true);
+					sel.removeAllRanges();
+					sel.addRange(range);
+
+				}
+			}
+
+			Boss.htmlEditor.setTextareaValue(id, editor.innerHTML);
+		});
+
+		Boss.evts.add('mousedown', Boss.getById('editor-'+id), function(evts){
+			Boss.targt(evts).focus();
+		});
+
+		Boss.evts.add('resizestart', Boss.getById('editor-'+id), function(evts){
+			if(evts.stopPropagation){
+				evts.stopPropagation();
+			}
+			e.cancelBubble = true;
+			if(evts.preventDefault){
+				evts.preventDefault();
+			}
+			e.returnValue = false;
+			return false;
+		});
+	}
+};
