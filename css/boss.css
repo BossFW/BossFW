@@ -275,6 +275,7 @@ fieldset{
 	height: 0px;
 	position: absolute !important;
 	opacity: 0 !important;
+	overflow: auto;
 }
 .border-box{
 	box-sizing: border-box;
