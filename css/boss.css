@@ -267,6 +267,9 @@ fieldset{
 .margin-auto{
 	margin: auto;
 }
+.outline-none{
+	outline: none;
+}
 .hidden{
 	margin-top: -9999px !important;
 	top: 0px;

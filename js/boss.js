@@ -297,13 +297,23 @@ window.Boss = {
 
 	},
 	/* SHOW HIDE COMPONENT */
-	showhide: function(element, forElement){
+	showhide: function(element, forElement, closeOut){
+
+		if(typeof(closeOut) === 'undefined'){
+			closeOut = false;
+		}
+
 		var el = Boss.getById(element);
-		var forElement = Boss.getById(forElement);
+		var forEl = Boss.getById(forElement);
+
+		el.setAttribute('tabindex', '0');
+		el.classList.add('outline-none');
+		forEl.setAttribute('tabindex', '0');
+		forEl.classList.add('outline-none');
 
 		if(el.getElementsByTagName('span')[0]){
 			var sp = el.getElementsByTagName('span')[0];
-			if(forElement.classList.contains('hidden')){
+			if(forEl.classList.contains('hidden')){
 				sp.classList.remove('rotate-180');
 			}else{
 				sp.classList.add('rotate-180');
@@ -314,15 +324,54 @@ window.Boss = {
 			if(el === Boss.targt(evts)){
 				if(el.getElementsByTagName('span')[0]){
 					var sp = el.getElementsByTagName('span')[0];
-					if(forElement.classList.contains('hidden')){
+					if(forEl.classList.contains('hidden')){
 						sp.classList.add('rotate-180');
 					}else{
 						sp.classList.remove('rotate-180');
 					}
 				}
-				forElement.classList.toggle('hidden');
+				forEl.classList.toggle('hidden');
+				if(closeOut === true){
+					Boss.delay(function(){
+						if(!forEl.classList.contains('hidden')){
+
+								Boss.getById(forElement).focus();
+							}
+					}, 50);
+				}
 			}
 		});
+
+		if(closeOut === true){
+
+			/* BLUR */
+			Boss.evts.add('blur', Boss.getById(forElement), function(evts){
+
+				var el = Boss.getById(element);
+				el.setAttribute('data-last-evt', 'blur');
+
+				/* BLUR OUT WITHOUT CHILD ELEMENT */
+				if(Boss.focusOut(Boss.getById(forElement), evts.relatedTarget) === false){
+
+					/* IF THE BLUR EVENT WAS HAPPENED OUT THE forElement ELEMENT */
+					if(Boss.getById(element) !== evts.relatedTarget && Boss.getById(forElement) !== evts.relatedTarget){
+
+						var forEl = Boss.getById(forElement);
+						forEl.classList.add('hidden');
+
+						var el = Boss.getById(element);
+						if(el.getElementsByTagName('span')[0]){
+							var sp = el.getElementsByTagName('span')[0];
+							if(forEl.classList.contains('hidden')){
+								sp.classList.remove('rotate-180');
+							}else{
+								sp.classList.add('rotate-180');
+							}
+						}
+					}
+				}
+			});
+		}
 	},
 	ajax: function (options) {
 		var XHR;
