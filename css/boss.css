@@ -123,10 +123,6 @@ fieldset{
 	border: 1px solid #AAA;
 	margin: 0px;
 }
-
-.strong, strong{
-	font-weight: 500;
-}
 .red{
 	color: #C22;
 }
@@ -215,7 +211,7 @@ fieldset{
 .width-100{
 	width: 100%;
 }
-.block, .block-s, .block-sl, .block-tp{
+.block, .block-s, .block-sl, .block-tp, .block-large{
 	display: inline-block;
 	vertical-align: top;
 	position: relative;
@@ -395,14 +391,26 @@ fieldset{
 	background-color: #41A1FF !important;
 }
 
-@media all and (min-width: 1281px){
-
+@media all and (min-width: 1601px){
+	.no-pc{
+		display: none !important;
+		position: absolute;
+		margin-left: -99999px;
+	}
 }
-@media all and (min-width: 961px) and (max-width: 1280px){
-
+@media all and (min-width: 961px) and (max-width: 1600px){
+	.block-large{
+		width: 100% !important;
+		padding: 5px 0px !important;
+	}
+	.no-pc{
+		display: none !important;
+		position: absolute;
+		margin-left: -99999px;
+	}
 }
 @media all and (min-width: 521px) and (max-width: 960px){
-	.block, .block-tp{
+	.block, .block-tp, .block-large{
 		width: 100% !important;
 		padding: 5px 0px !important;
 	}
@@ -416,7 +424,7 @@ fieldset{
 	}
 }
 @media all and (min-width: 382px) and (max-width: 520px){
-	.block, .block-tp, .block-sl{
+	.block, .block-tp, .block-sl, .block-large{
 		width: 100% !important;
 		padding: 5px 0px !important;
 	}
@@ -430,7 +438,7 @@ fieldset{
 	}
 }
 @media all and (max-width: 381px){
-	.block, .block-tp, .block-sl, .block-s{
+	.block, .block-tp, .block-sl, .block-s, .block-large{
 		width: 100% !important;
 		padding: 5px 0px !important;
 	}

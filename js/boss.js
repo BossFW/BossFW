@@ -136,6 +136,42 @@ window.Boss = {
 			return false;
 		}
 	},
+	serializer: function(formid){
+		if(this.getById(formid)){
+			var form = this.getById(formid);
+			var inputs =  form.getElementsByTagName('input');
+			var selects = form.getElementsByTagName('select');
+			var textareas = form.getElementsByTagName('textarea');
+			ti = inputs.length;
+			ts = selects.length;
+			tt = textareas.length;
+			serializado = {};
+			for(it = 0; it < ti; it++){
+				if(inputs[it].name){
+					if(inputs[it].getAttribute('type') === 'radio' || inputs[it].getAttribute('type') === 'checkbox'){
+						if(inputs[it].checked === true){
+							serializado[inputs[it].getAttribute('name')] = inputs[it].value;
+						}
+					}else{
+						serializado[inputs[it].getAttribute('name')] = inputs[it].value;
+					}
+				}
+			}
+			for(st = 0; st < ts; st++){
+				if(selects[st].getAttribute('name')){
+					serializado[selects[st].getAttribute('name')] = selects[st].value;
+				}
+			}
+			for(t = 0; t < tt; t++){
+				if(textareas[t].getAttribute('name')){
+					serializado[textareas[t].getAttribute('name')] = textareas[t].value;
+				}
+			}
+			return serializado;
+		}else{
+			return false;
+		}
+	},
 	toBytes: function(lengt){
 		if(lengt < 1024){
 			var siz = lengt.toFixed(1)+'B';
@@ -334,7 +370,6 @@ window.Boss = {
 				if(closeOut === true){
 					Boss.delay(function(){
 						if(!forEl.classList.contains('hidden')){
-
 								Boss.getById(forElement).focus();
 							}
 					}, 50);
@@ -2938,6 +2973,25 @@ Boss.validate = {
 			return true;
 		}
 	},
+	frmsMemory: {},
+	locks: {},
+	processLock: function(formid){
+
+		if(Boss.validate.locks[formid].lock === true){
+
+			/* UNLOCK */
+			if(Boss.validate.locks[formid].initString === Boss.validate.locks[formid].changeString){
+				lockChangePage = false;
+				lockClosePage = false;
+
+			/* LOCK */
+			}else{
+				lockChangePage = true;
+				lockClosePage = true;
+			}
+		}
+
+	},
 	processField: function(form, nme, rules, evtstype){
 
 		var fld = document.getElementsByName(this.frmsMemory[form].names[nme]);
@@ -3133,7 +3187,6 @@ Boss.validate = {
 		return statusValidate;
 
 	},
-	frmsMemory: {},
 	init: function(obj){
 
 		if(Boss.getById(obj.config.formId)){
@@ -3141,6 +3194,25 @@ Boss.validate = {
 			var formid = obj.config.formId;
 			var frm = Boss.getById(formid);
 			var tFrm = frm.length;
+
+			Boss.validate.locks[formid] = {};
+
+			var lockPushState = false;
+
+			if(typeof(obj.config.lockPushState) !== 'undefined'){
+				lockPushState = obj.config.lockPushState;
+			}
+
+			if(lockPushState === true){
+
+				Boss.validate.locks[formid]['lock'] = true;
+				Boss.validate.locks[formid]['initString'] = JSON.stringify(Boss.serializer(formid));
+
+			}
+
+			if(lockPushState === false){
+				Boss.validate.locks[formid]['lock'] = false;
+			}
 
 			if(frm.nodeName === 'FORM'){
 
@@ -3201,6 +3273,10 @@ Boss.validate = {
 						if(elem.nodeName !== 'BUTTON' && (elem.nodeName === 'INPUT' || elem.nodeName === 'TEXTAREA')){
 							if(elem.type !== 'radio' && elem.type !== 'checkbox' && elem.type !== 'select' && elem.type !== 'button' && elem.type !== 'submit' && elem.type !== 'reset' && elem.type !== 'image'){
 								Boss.validate.process(formid, evts);
+
+								Boss.validate.locks[formid]['changeString'] = JSON.stringify(Boss.serializer(formid));
+								Boss.validate.processLock(formid);
+
 							}
 						}
 					}, 100);
@@ -3231,6 +3307,26 @@ Boss.validate = {
 				/* CHANGE EVENT */
 				Boss.evts.add('change', frm, function(evts){
 					Boss.validate.process(formid, evts);
+
+					Boss.validate.locks[formid]['changeString'] = JSON.stringify(Boss.serializer(formid));
+					Boss.validate.processLock(formid);
+
+				});
+
+				/* PASTE EVENT */
+				Boss.evts.add('paste', frm, function(evts){
+
+					Boss.validate.locks[formid]['changeString'] = JSON.stringify(Boss.serializer(formid));
+					Boss.validate.processLock(formid);
+
+				});
+
+				/* CUT EVENT */
+				Boss.evts.add('cut', frm, function(evts){
+
+					Boss.validate.locks[formid]['changeString'] = JSON.stringify(Boss.serializer(formid));
+					Boss.validate.processLock(formid);
+
 				});
 
 			}else{
