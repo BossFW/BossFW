@@ -136,6 +136,18 @@ window.Boss = {
 			return false;
 		}
 	},
+	toBytes: function(lengt){
+		if(lengt < 1024){
+			var siz = lengt.toFixed(1)+'B';
+		}else if(lengt >= 1024 && lengt < 1048576){
+			var siz = lengt / 1024;
+			var siz = siz.toFixed(1)+'KB';
+		}else{
+			var siz = lengt / 1048576;
+			var siz = siz.toFixed(1)+'MB';
+		}
+		return siz;
+	},
 	serializer: function(formid){
 		if(this.getById(formid)){
 			var form = this.getById(formid);
@@ -171,18 +183,6 @@ window.Boss = {
 		}else{
 			return false;
 		}
-	},
-	toBytes: function(lengt){
-		if(lengt < 1024){
-			var siz = lengt.toFixed(1)+'B';
-		}else if(lengt >= 1024 && lengt < 1048576){
-			var siz = lengt / 1024;
-			var siz = siz.toFixed(1)+'KB';
-		}else{
-			var siz = lengt / 1048576;
-			var siz = siz.toFixed(1)+'MB';
-		}
-		return siz;
 	},
 	render: function(options, data){
 		if(!options.renderTo){
@@ -579,10 +579,14 @@ window.Boss = {
 
 			/* CLICK EVENTS */
 			Boss.evts.add('click', document, function(evts){
+
 				var elemt = Boss.targt(evts);
 
+				var exp = new RegExp('javascript:', 'i');
+
 				if((elemt.nodeName === 'A' || elemt.nodeName === 'a') && !elemt.getAttribute('data-href')){
-					if(elemt.href && !elemt.getAttribute('data-no-popstate')){
+
+					if(elemt.href && !elemt.getAttribute('data-no-popstate') && exp.test(elemt.href) === false){
 						if(evts.stopPropagation){
 							evts.stopPropagation();
 						}
@@ -596,7 +600,8 @@ window.Boss = {
 
 				if(elemt.parentNode){
 					if((elemt.parentNode.nodeName === 'A' || elemt.parentNode.nodeName === 'a') && !elemt.parentNode.getAttribute('data-href')){
-						if(elemt.parentNode.href && !elemt.parentNode.getAttribute('data-no-popstate')){
+
+						if(elemt.parentNode.href && !elemt.parentNode.getAttribute('data-no-popstate') && exp.test(elemt.parentNode.href) === false){
 							if(evts.stopPropagation){
 								evts.stopPropagation();
 							}
@@ -610,7 +615,8 @@ window.Boss = {
 
 				if(elemt.parentNode.parentNode){
 					if((elemt.parentNode.parentNode.nodeName === 'A' || elemt.parentNode.parentNode.nodeName === 'a') && !elemt.parentNode.parentNode.getAttribute('data-href')){
-						if(elemt.parentNode.parentNode.href && !elemt.parentNode.parentNode.getAttribute('data-no-popstate')){
+
+						if(elemt.parentNode.parentNode.href && !elemt.parentNode.parentNode.getAttribute('data-no-popstate') && exp.test(elemt.parentNode.parentNode.href) === false){
 							if(evts.stopPropagation){
 								evts.stopPropagation();
 							}
@@ -2400,7 +2406,7 @@ window.Boss = {
 
 Boss.validate = {
 	rules: {
-		cnpj: function(fld, parameter){
+		cnpj: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2449,7 +2455,7 @@ Boss.validate = {
 			}
 			return true;
 		},
-		cpf: function(fld, parameter){
+		cpf: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2501,7 +2507,7 @@ Boss.validate = {
 
 			return true;
 		},
-		inteiro: function(fld, parameter){
+		inteiro: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2523,9 +2529,28 @@ Boss.validate = {
 				return false;
 			}
 
-            return true;
+			return true;
 		},
-		moeda: function(fld, parameter){
+		inteiroZero: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var n = /^[0-9]+$/;
+			if(!n.test(value)){
+				return false;
+			}
+
+			return true;
+		},
+		moeda: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2544,7 +2569,7 @@ Boss.validate = {
 
 			return true;
 		},
-		decimal: function(fld, parameter){
+		decimal: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2563,7 +2588,7 @@ Boss.validate = {
 
 			return true;
 		},
-		cep: function(fld, parameter){
+		cep: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2637,7 +2662,7 @@ Boss.validate = {
 
 			return true;
 		},
-		url: function(fld, parametro) {
+		url: function(fld, parameters) {
 
 			var value = '';
 			var lengt = fld.length;
@@ -2729,7 +2754,7 @@ Boss.validate = {
 			}
 			return false;
 		},
-        maiorIgualId: function(fld, parameter){
+		maiorIgualId: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2741,51 +2766,13 @@ Boss.validate = {
 				}
 			}
 
-			var maiorigualid = Boss.getById(parameter.maiorIgualId);
+			var maiorigualid = Boss.getById(parameters.maiorIgualId);
 			if(parseFloat(value) >= parseFloat(maiorigualid.value)){
 				return true;
 			}
 			return false;
 		},
-		maiorIdNull: function(value, parameter){
-		    var igual = Boss.getById(parametro);
-            if(parseFloat(value) >= parseFloat(igual.value) || igual.value == ''){
-                return true;
-            }
-            return false;
-        },
-        maior: function(value, parameter){
-            if(parseFloat(value) > parseFloat(parametro)){
-                return true;
-            }
-            return false;
-        },
-        maiorIgual: function(value, parameter){
-            if(parseFloat(value) >= parseFloat(parametro.value)){
-                return true;
-            }
-            return false;
-        },
-        menor: function(value, parameter){
-            if(parseFloat(value) < parseFloat(parametro.value)){
-                return true;
-            }
-            return false;
-        },
-        menorIgual: function(value, parameter){
-            if(parseFloat(value) <= parseFloat(parametro)){
-                return true;
-            }
-            return false;
-        },
-        maiorNuloId: function(value, parameter){
-            var igual = Boss.getById(parametro);
-            if(parseFloat(value) >= parseFloat(igual.value) || value === ''){
-                return true;
-            }
-            return false;
-        },
-        diferente: function(fld, parameter){
+		maiorIdNull: function(fld, parameters){
 
 			var value = '';
 			var lengt = fld.length;
@@ -2797,66 +2784,217 @@ Boss.validate = {
 				}
 			}
 
-            if(value !== parameter.diferente){
-                return true;
-            }
-            return false;
-        },
-        diferenteId: function(value, parameter){
-            var diff = Boss.getById(parametro);
-            if(value !== diff.value || value === ''){
-                return true;
-            }
-            return false;
-        },
-		tamanhoMaximo: function(fld, parameter){
-
-			var value = '';
-			var lengt = fld.length;
-
-			if(lengt < 2){
-				value = fld[0].value;
-				if(value === ''){
-					return true;
-				}
+			var igual = Boss.getById(parameters.maiorIdNull);
+			if(parseFloat(value) >= parseFloat(igual.value) || igual.value == ''){
+				return true;
 			}
-
-			if(value.length <= parameter.tamanhoMaximo){
-				return false;
-			}
-			return true;
+			return false;
 
 		},
-        tamanhoMinimo: function(value, parameter){
-            var tam = parseInt(fld);
-            if(value.length < tam){
-                return false;
-            }
-            return true;
-        },
-        sicredi: function(value, parameter){
+		maior: function(fld, parameters){
 
-            n = /^\d+?$/;
-            if(!n.test(value)){
-                return false;
-            }
+			var value = '';
+			var lengt = fld.length;
 
-            if(value.length !== 7){
-                return false;
-            }
-            return true;
-        },
-		banrisul: function(value, parameter){
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(parseFloat(value) > parseFloat(parameters.maior)){
+				return true;
+			}
+			return false;
+
+		},
+		maiorIgual: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(parseFloat(value) >= parseFloat(parameters.maiorIgual)){
+				return true;
+			}
+			return false;
+		},
+		menor: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(parseFloat(value) < parseFloat(parameters.value)){
+				return true;
+			}
+			return false;
+		},
+		menorIgual: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(parseFloat(value) <= parseFloat(parameters.menorIgual)){
+				return true;
+			}
+			return false;
+
+		},
+		maiorNuloId: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var igual = Boss.getById(parameters.maiorNuloId);
+			if(parseFloat(value) >= parseFloat(igual.value) || value === ''){
+				return true;
+			}
+			return false;
+
+		},
+		diferente: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(value !== parameters.diferente){
+				return true;
+			}
+			return false;
+		},
+		diferenteId: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var diff = Boss.getById(parameters.diferenteId);
+			if(value !== diff.value || value === ''){
+				return true;
+			}
+			return false;
+		},
+		tamanhoMaximo: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(value.length <= parameters.tamanhoMaximo){
+				return true;
+			}
+			return false;
+
+		},
+		tamanhoMinimo: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			if(value.length <= parameters.tamanhoMinimo){
+				return true;
+			}
+			return false;
+		},
+		sicredi: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
 
 			n = /^\d+?$/;
 			if(!n.test(value)){
 				return false;
 			}
 
-			if(value.length !== 7){
+			if(value.length === 7){
+				return true;
+			}
+			return false;
+
+		},
+		banrisul: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			n = /^\d+?$/;
+			if(!n.test(value)){
 				return false;
 			}
-			return true;
+
+			if(value.length === 7){
+				return true;
+			}
+			return false;
+
 		},
 		minSelection: function(fld, parameters){
 			
@@ -3162,9 +3300,7 @@ Boss.validate = {
 			}
 
 		/* SUBMIT */
-		}else if(evts.type === 'submit'){
-			
-			var fld = Boss.targt(evts);
+		}else if(evts.type === 'submit' || evts === 'submit'){
 
 			/* ACROSS FIELDS */
 			for(x in this.frmsMemory[form].names){
@@ -3174,7 +3310,7 @@ Boss.validate = {
 				/* IF NAME EXISTS */
 				if(typeof(this.frmsMemory[form]['fields'][nme]) !== 'undefined'){
 
-					var tmStatus = this.processField(form, nme, this.frmsMemory[form]['fields'][nme].rules, evts.type);
+					var tmStatus = this.processField(form, nme, this.frmsMemory[form]['fields'][nme].rules, 'submit');
 					/* BREAK TRUE */
 					if(statusValidate === true && tmStatus === false){
 						statusValidate = tmStatus;
