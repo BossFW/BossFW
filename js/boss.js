@@ -1447,7 +1447,7 @@ window.Boss = {
 					checkd = 'checked';
 					tcheckd = tcheckd + 1;
 				}
-				li.innerHTML = '<input tabindex="-1" '+checkd+' type="radio"  name="'+elemtString+'" class="boss-comp-radio" value="'+lines[x].value+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+lines[x].innerHTML+'</label>';
+				li.innerHTML = '<input tabindex="-1" '+checkd+' type="radio" name="'+elemtString+'" class="boss-comp-radio" value="'+lines[x].value+'" id="'+id+'"><label for="'+id+'"><span class="boss-comp-radio-span"></span>'+lines[x].innerHTML+'</label>';
 				ul.appendChild(li);
 
 			}
@@ -2406,6 +2406,75 @@ window.Boss = {
 
 Boss.validate = {
 	rules: {
+		notUppercase: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			var upper = {'A':'','B':'','C':'','D':'','E':'','F':'','G':'','H':'','I':'','J':'','K':'','L':'','M':'','N':'','O':'','P':'','Q':'','R':'','S':'','T':'','U':'','V':'','W':'','X':'','Y':'','Z':''};
+			var lower = {'a':'','b':'','c':'','d':'','e':'','f':'','g':'','h':'','i':'','j':'','k':'','l':'','m':'','n':'','o':'','p':'','q':'','r':'','s':'','t':'','u':'','v':'','w':'','x':'','y':'','z':''};
+
+			var lengtUpper = 0;
+			var lengtLower = 0;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var temp = value.split('');
+			var lTemp = temp.length;
+
+			if(lTemp > 4){
+
+				for (x = 0; x < lTemp; x++) {
+
+					if(typeof(upper[temp[x]]) !== 'undefined'){
+						lengtUpper = lengtUpper + 1;
+					}else if(typeof(lower[temp[x]]) !== 'undefined'){
+						lengtLower = lengtLower + 1;
+					}else{
+						lengtLower = lengtLower + 1;
+					}
+				}
+
+				// MORE UPPER WHO LOWER
+				if(lengtUpper > lengtLower){
+					return false;
+				}
+
+			}
+
+			return true;
+
+		},
+		notSpace: function(fld, parameters){
+
+			var value = '';
+			var lengt = fld.length;
+
+			if(lengt < 2){
+				value = fld[0].value;
+				if(value === ''){
+					return true;
+				}
+			}
+
+			var temp = value.split('');
+			var lTemp = temp.length;
+
+			for (x = 0; x < lTemp; x++) {
+
+				if(temp[x] == ' '){
+					return false;
+				}
+			}
+
+			return true;
+
+		},
 		cnpj: function(fld, parameters){
 
 			var value = '';
@@ -2611,14 +2680,18 @@ Boss.validate = {
 
 			var lengt = fld.length;
 
-			if(lengt < 2){
-				var value = fld[0].value;
+			if(lengt < 2 && fld[0].type !== 'radio'){
+				value = fld[0].value;
 				if(value === ''){
 					return false;
 				}
-			/* go to minSelection and maxSelection rules, if exists */
-			}else{
-				return true;
+			}else if(fld[0].type === 'radio'){
+				for(x = 0; x < lengt; x++){
+					if(fld[x].checked === true && fld[x].value === ''){
+						return false;
+						break;
+					}
+				}
 			}
 
 			return true;
@@ -3156,8 +3229,20 @@ Boss.validate = {
 							Boss.warning({message: rMessage});
 						}
 
-						fld[0].parentNode.classList.add(classError);
-						fld[0].parentNode.classList.remove(classOk);
+						// selectUnique COMPONENT
+						if(fld[0].getAttribute('tabindex') == '-1' && fld[0].type === 'radio'){
+
+							var selectUnique = fld[0].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+							selectUnique.classList.add(classError);
+							selectUnique.classList.remove(classOk);
+
+						}else{
+
+							fld[0].parentNode.classList.add(classError);
+							fld[0].parentNode.classList.remove(classOk);
+
+						}
 						
 						/* BREAK LOOPS */
 						return false;
@@ -3165,8 +3250,19 @@ Boss.validate = {
 						/* BREAK LOOPS */
 						break;
 					}else{
-						fld[0].parentNode.classList.add(classOk);
-						fld[0].parentNode.classList.remove(classError);
+
+						// selectUnique COMPONENT
+						if(fld[0].getAttribute('tabindex') == '-1' && fld[0].type === 'radio'){
+
+							var selectUnique = fld[0].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+							selectUnique.classList.add(classOk);
+							selectUnique.classList.remove(classError);
+
+						}else{
+							fld[0].parentNode.classList.add(classOk);
+							fld[0].parentNode.classList.remove(classError);
+						}
 					}
 				}else{
 					console.warn('The rule "'+r+'" don\'t exists.');
