@@ -4,6 +4,20 @@
   width: device-width;
 }
 
+/* HIDE YELLOW BACKGROUND IN STORED PASSWORD */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active{
+	background-color: rgba(0,0,0,0) !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
 /* SCROLL-BAR */
 ::-webkit-scrollbar{width: 10px; height: 10px;}
 ::-webkit-scrollbar-track-piece{background-color: #EEE;}
@@ -123,6 +137,12 @@ fieldset{
 	border: 1px solid #AAA;
 	margin: 0px;
 }
+hr{
+	height: 1px;
+	border: none;
+	background-color: #CCC;
+}
+
 .red{
 	color: #C22;
 }
@@ -147,11 +167,12 @@ fieldset{
 .responsivevideo{
 	position: relative;
 	padding-bottom: 56.25% !important; /* 16:9 */
-	padding-top: 25px !important;
 	height: 0 !important;
 	z-index: 5;
 }
 .responsivevideo iframe{
+	border: none;
+	outline: none;
 	position: absolute;
 	top: 0 !important;
 	left: 0 !important;
@@ -161,10 +182,10 @@ fieldset{
 	border: 0px !important;
 }
 .width-10{
-	width: 10% !important;
+	width: 10%;
 }
 .width-15{
-	width: 15% !important;
+	width: 15%;
 }
 .width-20{
 	width: 20%;
@@ -178,6 +199,9 @@ fieldset{
 .width-33{
 	width: 33%;
 }
+.width-33-3{
+	width: 33.3%;
+}
 .width-34{
 	width: 34%;
 }
@@ -187,11 +211,20 @@ fieldset{
 .width-40{
 	width: 40%;
 }
+.width-45{
+	width: 45%;
+}
 .width-50{
 	width: 50%;
 }
+.width-55{
+	width: 55%;
+}
 .width-60{
 	width: 60%;
+}
+.width-65{
+	width: 65%;
 }
 .width-70{
 	width: 70%;
@@ -211,6 +244,31 @@ fieldset{
 .width-100{
 	width: 100%;
 }
+.site-space{
+	display: table;
+	width: 100%;
+	height: 10px;
+}
+.site-space-20{
+	display: table;
+	width: 100%;
+	height: 20px;
+}
+.site-space-30{
+	display: table;
+	width: 100%;
+	height: 30px;
+}
+.site-space-50{
+	display: table;
+	width: 100%;
+	height: 50px;
+}
+.site-space-100{
+	display: table;
+	width: 100%;
+	height: 50px;
+}
 .block, .block-s, .block-sl, .block-tp, .block-large{
 	display: inline-block;
 	vertical-align: top;
@@ -226,6 +284,18 @@ fieldset{
 }
 .block-padding-right{
 	padding-right: 5px;
+}
+.padding-right-10{
+	padding-right: 10px;
+}
+.padding-left-10{
+	padding-left: 10px;
+}
+.padding-right-20{
+	padding-right: 20px;
+}
+.padding-left-20{		
+	padding-left: 20px;		
 }
 .float-left{
 	float: left;
@@ -391,28 +461,52 @@ fieldset{
 	background-color: #41A1FF !important;
 }
 
-@media all and (min-width: 1601px){
+@media all and (min-width: 1281px){
 	.no-pc{
 		display: none !important;
 		position: absolute;
 		margin-left: -99999px;
 	}
 }
-@media all and (min-width: 961px) and (max-width: 1600px){
-	.block-large{
-		width: 100% !important;
-		padding: 5px 0px !important;
-	}
+@media all and (min-width: 1024px) and (max-width: 1280px){
 	.no-pc{
 		display: none !important;
 		position: absolute;
 		margin-left: -99999px;
 	}
 }
-@media all and (min-width: 521px) and (max-width: 960px){
-	.block, .block-tp, .block-large{
+@media all and (min-width: 768px) and (max-width: 1023px){
+	.block, .block-tp{
 		width: 100% !important;
 		padding: 5px 0px !important;
+	}
+	.reponsive-table{
+		clear: both !important;
+		float: left !important;
+		display: table !important;
+		width: 100% !important;
+		margin-bottom: 5px;
+	}
+	.no-mobile{
+		display: none !important;
+		position: absolute;
+		margin-left: -99999px;
+	}
+	.mobile-text-center{
+		text-align: center;
+	}
+}
+@media all and (min-width: 521px) and (max-width: 767px){
+	.block, .block-tp{
+		width: 100% !important;
+		padding: 5px 0px !important;
+	}
+	.reponsive-table{
+		clear: both !important;
+		float: left !important;
+		display: table !important;
+		width: 100% !important;
+		margin-bottom: 5px;
 	}
 	.no-mobile{
 		display: none !important;
@@ -424,9 +518,16 @@ fieldset{
 	}
 }
 @media all and (min-width: 382px) and (max-width: 520px){
-	.block, .block-tp, .block-sl, .block-large{
+	.block, .block-tp, .block-sl{
 		width: 100% !important;
 		padding: 5px 0px !important;
+	}
+	.reponsive-table{
+		clear: both !important;
+		float: left !important;
+		display: table !important;
+		width: 100% !important;
+		margin-bottom: 5px;
 	}
 	.no-mobile{
 		display: none !important;
@@ -438,9 +539,16 @@ fieldset{
 	}
 }
 @media all and (max-width: 381px){
-	.block, .block-tp, .block-sl, .block-s, .block-large{
+	.block, .block-tp, .block-sl, .block-s{
 		width: 100% !important;
 		padding: 5px 0px !important;
+	}
+	.reponsive-table{
+		clear: both !important;
+		float: left !important;
+		display: table !important;
+		width: 100% !important;
+		margin-bottom: 5px;
 	}
 	.no-mobile{
 		display: none !important;
